@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // lets make the public function for the register here 
+    // lets make the public function for the register here
     public function register(Request $request){
-        // lets introduce the validation of the user details from the User model 
+        // lets introduce the validation of the user details from the User model
         $validated = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -23,33 +23,33 @@ class AuthController extends Controller
                 $validated->errors()
             ], 403);
         }
-        
+
         try {
-            // let's make the user registration here 
+            // let's make the user registration here
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request -> email,
                 'password' => Hash::make($request->password)
             ]);
 
-            // let's ,make the token for the user registration 
-            $token = $user->createToken(`Auth_Token`)->plainTextToken;
+            // let's ,make the token for the user registration
+            $token = $user->createToken('Auth_Token')->plainTextToken;
 
-            // lets return the response 
+            // lets return the response
 
             return response() -> json([
                 'access_token' => $token,
                 'user' => $user,
             ], 200);
         } catch (\Exception $exception) {
-            // let's return a response for the excption errors 
+            // let's return a response for the excption errors
             return response() -> json([
                 'error' => $exception->getMessage(),
             ], 409);
         }
     }
 
-    // let's make the public function for the login 
+    // let's make the public function for the login
 
     public function login(Request $request){
         $validated = Validator::make($request -> all(), [
@@ -75,9 +75,9 @@ class AuthController extends Controller
             }
             $user = User::where('email', $request -> email)->firstOrfail();
 
-            $token = $user -> createToken(`Auth_Token`)->plainTextToken;
+            $token = $user -> createToken('Auth_Token')->plainTextToken;
 
-             // lets return the response 
+             // lets return the response
 
              return response() -> json([
                 'access_token' => $token,
@@ -92,7 +92,7 @@ class AuthController extends Controller
     }
 
 
-    // let's make the logout function 
+    // let's make the logout function
 
     public function logout(Request $request){
         $request -> user()-> token()-> delete();
